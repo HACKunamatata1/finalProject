@@ -3,6 +3,11 @@ import pyxel
 class gridSquare:
     #properties coordX and coordY,initialize 0,0
     #global variables or @property
+    __cx=0
+    __cy=0
+    def __init__(self,x,y):
+        self.cx=x
+        self.cy=y
 
 
 class App:
@@ -19,11 +24,12 @@ class App:
         for i in range (self.WIDTH/self.MYSIZE):
             self.board.append([])
             for j in range (self.HEIGHT/self.MYSIZE):
+                obj=Cell(5,17)
                 self.board[i].append([])
 
 
         cell in my grid
-
+        
         pyxel.run(self.update, self.draw)
 
     def update(self):
