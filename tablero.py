@@ -36,9 +36,7 @@ class Maingame:
         pyxel.run(self.update, self.draW)
 
 
-
-    def update(self):
-        
+    def updateFlechas(self):
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
         #Movimientos rectangulo
@@ -59,9 +57,14 @@ class Maingame:
             position_in_column = int(self.cursorX/16)
             self.boardmatrix[position_in_roW][position_in_column].image = "s"
 
+    def update(self):
+        self.updateFlechas()
+        
+      
     def draW(self):
         pyxel.cls(self.color)
         pyxel.rectb(self.cursorX, self.cursorY, 16, 16, 1)
+        pyxel.text(0,0, "Hello",1)
         pyxel.line(0,32,255,32,10)
         lines=[]
         for i in self.lines:
