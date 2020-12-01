@@ -64,7 +64,7 @@ class Maingame:
     def draW(self):
         pyxel.cls(self.color)
         pyxel.rectb(self.cursorX, self.cursorY, 16, 16, 1)
-        pyxel.text(0,0, "Hello",1)
+        pyxel.text(0,0, "Level:",1)
         pyxel.line(0,32,255,32,10)
         lines=[]
         for i in self.lines:
