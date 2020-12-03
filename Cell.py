@@ -6,10 +6,12 @@ class Cell:
     cellx = 0
     celly = 0
 
-    def __init__(self, myx, myy):
+    def __init__(self, x, y):
 
-        self.cellx=myx
-        self.celly=myy
-        self.element= "V"
+    # APPROACH IN NUMBERS OF A MATRIX
+
+        self.cellx=x
+        self.celly=y
+        self.element= "NONE"
         self.suelo = False 
         

@@ -126,8 +126,11 @@ class Maingame:
                 if cellcheck.element=="U":
                     pyxel.text(cellcheck.cellx*16, cellcheck.celly*16, cellcheck.element,5)                    
                 if cellcheck.element=="B":
-                    pyxel.text(cellcheck.cellx*16, cellcheck.celly*16, cellcheck.element,5)             
 
+                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,15,16,16)
+                    """
+                    pyxel.text(cellcheck.cellx*16, cellcheck.celly*16, cellcheck.element,5)             
+                    """
                   
 
 Maingame()
