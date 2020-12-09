@@ -12,9 +12,9 @@ class Cell:
         self.cellx=x
         self.celly=y
         
-        self.element = "NONE"
+        self.cellclass = None
         self.used = False
-        self.thereisfloor = False
+        
         self.entrygate = False
         self.lemming = False
         

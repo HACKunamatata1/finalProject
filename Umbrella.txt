@@ -1,6 +1,0 @@
-
-class Umbrella:
-
-    def __init__(self):
-
-        self.used = False

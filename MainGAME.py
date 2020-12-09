@@ -1,13 +1,25 @@
+#Importing Pyxel library and random library
 import pyxel
 import random
 
+#Importing fixed variables from a Constants Module
 from Constants import *
+#Importing Cell class, Platform class and Score class
 from Cell import *
 from Score import *
+from Platform import *
+from Lava import *
+#Importing entry and exit gates
 from Entrygate import *
 from Exitgate import *
-from Platform import *
+#Importing Lemmings class
 from Lemmings import *
+#Importing tools
+from Rightladder import *
+from Leftladder import *
+from Umbrella import *
+from Blocker import *
+
 
 
 
@@ -20,6 +32,7 @@ class Maingame:
         self.backgroundcolor = BACKGROUND  
         pyxel.init(WIDTH, HEIGHT, caption = "Pyxel Lemmings")
         pyxel.load("assets/SPRITES.pyxres")
+
         pyxel.playm(0,loop=True)                     # PLAYING BACKGROUND MUSIC
 
         self.cursorX, self.cursorY = 0, 32           # INITIAL VALUES OF USER POINTER
@@ -38,13 +51,20 @@ class Maingame:
         
         self.myscore = Score()                       # using Score from Score module
 
-        ## CREATING LAVA: THIS IS FOR ENSURING LEMMINGS THAT FALL OUTSIDE THE BOARD FROM BELOW
-        ## DONT CRASH THE GAME
-           
+        ## CREATING SUPERFLOOR: THIS IS FOR ENSURING LEMMINGS THAT FALL TO THE BOTTOM
+        # OF THE BOARD DONT CRASH THE GAME. IF YOU WANT THE LEMMINGS TO DIE WHEN 
+        ## REACHING THE BOTTOM OF THE BOARD, YOU CAN ACTIVATE THE CODE 
+        # COMMENTED BELOW, CREATING LAVA CELLS AT THE BOTTOM OF THE BOARD:
+        """
+            for i in range(self.cellcolumn):
+                cellcheck=self.boardmatrix[i][int(self.cellcolumn) - 1]
+                cellcheck.cellclass= Lava(i, (int(self.cellcolumn) - 1))
+        """
+
         for i in range(self.cellcolumn):
             cellcheck=self.boardmatrix[i][int(self.cellcolumn) - 1]
-            cellcheck.element="LAVA"
-
+            cellcheck.cellclass= Platform(i, (int(self.cellcolumn) - 1))
+        
         ## SECOND STEP : CREATING THE PLATFORMS
 
         self.available_column_positions = (48,80,112,144,176,208,240)
@@ -61,8 +81,7 @@ class Maingame:
             yposition = self.available_column_positions[i]
 
             boardplatform_start = Platform(xposition, yposition)
-            self.boardmatrix[int(xposition/16)][int(yposition/16)].element = "FLOOR"
-            self.boardmatrix[int(xposition/16)][int(yposition/16)].thereisfloor = True ##????? USED???
+            self.boardmatrix[int(xposition/16)][int(yposition/16)].cellclass = Platform(xposition, yposition)
             self.platforms.append(boardplatform_start)
 
             length_of_floor = random.randint(4,9)  #EXTENDING THE PLATFORMS
@@ -70,8 +89,7 @@ class Maingame:
             for i in range(0,length_of_floor):
                 xposition += 16
                 boardplatform_prolong = Platform(xposition, yposition)
-                self.boardmatrix[int(xposition/16)][int(yposition/16)].element = "FLOOR"                       
-                self.boardmatrix[int(xposition/16)][int(yposition/16)].thereisfloor = True
+                self.boardmatrix[int(xposition/16)][int(yposition/16)].cellclass = Platform(xposition, yposition)                      
                 self.platforms.append(boardplatform_prolong)
 
         ## THIRD STEP: CREATE ENTRANCE AND EXIT GATES FOR THE LEMMINGS
@@ -107,10 +125,7 @@ class Maingame:
         self.list_of_lemmings.append(self.lemming)
 
         self.myscore.addlemming()
-
-        if self.lemming.died == True:
-            self.myscore.dellemming()
-            self.list_of_lemmings.remove(self.lemming)
+        
         
         pyxel.run(self.update, self.draw)
 
@@ -138,75 +153,87 @@ class Maingame:
 
         
         # THIS IS ALL THE CODE DESIGNED FOR THE TOOLS PLACEMENT 
+        
+        ## IMPORTANT NOTE: FROM NOW ON WE USED ISINSTANCE() FUNCTION
+        ## TO CHECK IF A GIVEN CELL CONTAINS SOME TYPE OF OBJECT (platforms, tools...)
+        ## we didn't see this on the course but it is a very simple function and very useful
+        ## for the program.
 
     def update_tools_placeement(self):
 
         # RIGHT LADDER
 
         if pyxel.btnp(pyxel.KEY_A):
+            
             position_in_row = int(self.cursorY/16) 
             position_in_column = int(self.cursorX/16)
-            if self.boardmatrix[position_in_column][position_in_row].element == "RIGHT LADDER-PH":
-                self.boardmatrix[position_in_column][position_in_row].element = "NONE"
+            cellsee = self.boardmatrix[position_in_column][position_in_row]
+
+            if (isinstance(cellsee.cellclass, Right_Ladder) == True and
+                cellsee.cellclass.used == False):
+
+                cellsee.cellclass = None
                 self.myscore.addLadder()
             else:
-                if self.boardmatrix[position_in_column][position_in_row].element == "NONE":
+                if cellsee.cellclass == None:
                     if self.myscore.ladders != 0:
-                        self.boardmatrix[position_in_column][position_in_row].element = "RIGHT LADDER-PH"
+                        cellsee.cellclass = Right_Ladder(position_in_row, position_in_column)
                         self.myscore.delLadder()
-                if (self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA"):
+                if isinstance(cellsee.cellclass, Umbrella) == True:
                     if self.myscore.ladders != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addUmbrella()
-                        self.boardmatrix[position_in_column][position_in_row].element = "RIGHT LADDER-PH"
+                        cellsee.cellclass = Right_Ladder(position_in_row, position_in_column)
                         self.myscore.delLadder()
                         
-                if (self.boardmatrix[position_in_column][position_in_row].element == "LEFT LADDER-PH"):
+                if (isinstance(cellsee.cellclass, Left_Ladder) == True 
+                    and cellsee.cellclass.used == False):
                     if self.myscore.ladders != 0:
-                        self.boardmatrix[position_in_column][position_in_row].element = "RIGHT LADDER-PH"
+                        cellsee.cellclass = Right_Ladder(position_in_row, position_in_column)
                         
-                if (self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER"):
+                if isinstance(cellsee.cellclass, Blocker) == True:
                     if self.myscore.ladders != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addBlocker()
-                        self.boardmatrix[position_in_column][position_in_row].element = "RIGHT LADDER-PH"
+                        cellsee.cellclass = Right_Ladder(position_in_row, position_in_column)
                         self.myscore.delLadder()
                         
             
         # LEFT LADDER        
 
         if pyxel.btnp(pyxel.KEY_S):
+
             position_in_row = int(self.cursorY/16) 
             position_in_column = int(self.cursorX/16)
-            if self.boardmatrix[position_in_column][position_in_row].element == "LEFT LADDER-PH":
-                self.boardmatrix[position_in_column][position_in_row].element = "NONE"
+            cellsee = self.boardmatrix[position_in_column][position_in_row]
+
+            if (isinstance(cellsee.cellclass, Left_Ladder) == True and
+                cellsee.cellclass.used == False):
+                cellsee.cellclass = None
                 self.myscore.addLadder()
             else:
-                if self.boardmatrix[position_in_column][position_in_row].element == "NONE":
+                if cellsee.cellclass == None:
                     if self.myscore.ladders != 0:
-                        self.boardmatrix[position_in_column][position_in_row].element = "LEFT LADDER-PH"
+                        cellsee.cellclass = Left_Ladder(position_in_row, position_in_column)
                         self.myscore.delLadder()
 
-                if (self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA"):
+                if isinstance(cellsee.cellclass, Umbrella) == True:
                     if self.myscore.ladders != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addUmbrella()
-                        self.boardmatrix[position_in_column][position_in_row].element = "LEFT LADDER-PH"
+                        cellsee.cellclass = Left_Ladder(position_in_row, position_in_column)
                         self.myscore.delLadder()
                         
-                if (self.boardmatrix[position_in_column][position_in_row].element == "RIGHT LADDER-PH"):
+                if (isinstance(cellsee.cellclass, Right_Ladder) == True and
+                    cellsee.cellclass.used == False):
                     if self.myscore.ladders != 0:
-                        self.boardmatrix[position_in_column][position_in_row].element = "LEFT LADDER-PH"
+                        cellsee.cellclass = Left_Ladder(position_in_row, position_in_column)
                         
-                if (self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER-PH"):
+                if isinstance(cellsee.cellclass, Blocker) == True:
                     if self.myscore.ladders != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addBlocker()
-                        self.boardmatrix[position_in_column][position_in_row].element = "LEFT LADDER-PH"
+                        cellsee.cellclass = Left_Ladder(position_in_row, position_in_column)
                         self.myscore.delLadder()
                         
 
@@ -215,40 +242,38 @@ class Maingame:
         if pyxel.btnp(pyxel.KEY_D):
             position_in_row = int(self.cursorY/16) 
             position_in_column = int(self.cursorX/16)
-            if (self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA-PH"
-                or self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA"):
-                if self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA-PH":
+            cellsee = self.boardmatrix[position_in_column][position_in_row]
+
+            if (isinstance(cellsee.cellclass, Umbrella) == True and
+                cellsee.cellclass.used == False):
                     self.myscore.addUmbrella()
-                self.boardmatrix[position_in_column][position_in_row].element = "NONE"
+                    cellsee.cellclass = None
                 
             else:
-                if self.boardmatrix[position_in_column][position_in_row].element == "NONE":
+                if cellsee.cellclass == None:
                     if self.myscore.umbrellas != 0:
-                        self.boardmatrix[position_in_column][position_in_row].element = "UMBRELLA-PH"
+                        cellsee.cellclass = Umbrella(position_in_row, position_in_column)
                         self.myscore.delUmbrella()
 
-                if (self.boardmatrix[position_in_column][position_in_row].element == "LEFT LADDER-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "LEFT LADDER"):
+                if isinstance(cellsee.cellclass, Left_Ladder) == True:
                     if self.myscore.umbrellas != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "LEFT LADDER-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addLadder()
-                        self.boardmatrix[position_in_column][position_in_row].element = "UMBRELLA-PH"
-                        self.myscore.delUmbrella()
+                            cellsee.cellclass = Umbrella(position_in_row, position_in_column)
+                            self.myscore.delUmbrella()
                         
-                if (self.boardmatrix[position_in_column][position_in_row].element == "RIGHT LADDER-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "RIGHT LADDER"):
+                if isinstance(cellsee.cellclass, Right_Ladder) == True:
                     if self.myscore.umbrellas != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "RIGHT LADDER-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addLadder()
-                        self.boardmatrix[position_in_column][position_in_row].element = "UMBRELLA-PH"
-                        self.myscore.delUmbrella()
+                            cellsee.cellclass = Umbrella(position_in_row, position_in_column)
+                            self.myscore.delUmbrella()
                         
-                if (self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER"):
+                if isinstance(cellsee.cellclass, Blocker) == True:
                     if self.myscore.umbrellas != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addBlocker()
-                        self.boardmatrix[position_in_column][position_in_row].element = "UMBRELLA-PH"
+                        cellsee.cellclass = Umbrella(position_in_row, position_in_column)
                         self.myscore.delUmbrella()
 
         #BLOCKER                
@@ -256,59 +281,66 @@ class Maingame:
         if pyxel.btnp(pyxel.KEY_F):
             position_in_row = int(self.cursorY/16) 
             position_in_column = int(self.cursorX/16)
-            if (self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER-PH"
-                or self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER"):
-                if self.boardmatrix[position_in_column][position_in_row].element == "BLOCKER-PH":
+            cellsee = self.boardmatrix[position_in_column][position_in_row]
+
+            if (isinstance(cellsee.cellclass, Blocker) == True and
+                cellsee.cellclass.used == False):
                     self.myscore.addBlocker()
-                self.boardmatrix[position_in_column][position_in_row].element = "NONE"
+                    cellsee.cellclass = None
                 
             else:
-                if self.boardmatrix[position_in_column][position_in_row].element == "NONE":
+                if cellsee.cellclass == None:
                     if self.myscore.blockers != 0:
-                        self.boardmatrix[position_in_column][position_in_row].element = "BLOCKER-PH"
+                        cellsee.cellclass = Blocker(position_in_row, position_in_column)
                         self.myscore.delBlocker()
 
-                if (self.boardmatrix[position_in_column][position_in_row].element == "LEFT LADDER-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "LEFT LADDER"):
+                if isinstance(cellsee.cellclass, Left_Ladder) == True:
+
                     if self.myscore.blockers != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "LEFT LADDER-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addLadder()
-                        self.boardmatrix[position_in_column][position_in_row].element = "BLOCKER-PH"
-                        self.myscore.delBlocker()
+                            cellsee.cellclass = Blocker(position_in_row, position_in_column)
+                            self.myscore.delBlocker()
                         
-                if (self.boardmatrix[position_in_column][position_in_row].element == "RIGHT LADDER-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "RIGHT LADDER"):
+                if isinstance(cellsee.cellclass, Right_Ladder) == True:
                     if self.myscore.blockers != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "RIGHT LADDER-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addLadder()
-                        self.boardmatrix[position_in_column][position_in_row].element = "BLOCKER-PH"
-                        self.myscore.delBlocker()
+                            cellsee.cellclass = Blocker(position_in_row, position_in_column)
+                            self.myscore.delBlocker()
                         
-                if (self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA-PH" 
-                    or self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA"):
+                if isinstance(cellsee.cellclass, Umbrella) == True:
                     if self.myscore.umbrellas != 0:
-                        if self.boardmatrix[position_in_column][position_in_row].element == "UMBRELLA-PH":
+                        if cellsee.cellclass.used == False:
                             self.myscore.addUmbrella()
-                        self.boardmatrix[position_in_column][position_in_row].element = "BLOCKER-PH"
+                        cellsee.cellclass = Blocker(position_in_row, position_in_column)
                         self.myscore.delBlocker()
                         
-        #just for testing(ignore this)
+        #just for testing(ignore this): CREATING USED OBJECTS FOR SCORE TESTING
         if pyxel.btnp(pyxel.KEY_G):
             position_in_row = int(self.cursorY/16) 
-            position_in_column = int(self.cursorX/16)    
-            self.boardmatrix[position_in_column][position_in_row].element = "RIGHT LADDER"
+            position_in_column = int(self.cursorX/16)
+            cellsee = self.boardmatrix[position_in_column][position_in_row] 
+            cellsee.cellclass = Right_Ladder(position_in_row, position_in_column)
+            cellsee.cellclass.used = True
         if pyxel.btnp(pyxel.KEY_H):
             position_in_row = int(self.cursorY/16) 
-            position_in_column = int(self.cursorX/16)    
-            self.boardmatrix[position_in_column][position_in_row].element = "LEFT LADDER"
+            position_in_column = int(self.cursorX/16)
+            cellsee = self.boardmatrix[position_in_column][position_in_row]   
+            cellsee.cellclass = Left_Ladder(position_in_row, position_in_column)
+            cellsee.cellclass.used = True
         if pyxel.btnp(pyxel.KEY_J):
             position_in_row = int(self.cursorY/16) 
-            position_in_column = int(self.cursorX/16)    
-            self.boardmatrix[position_in_column][position_in_row].element = "UMBRELLA"
+            position_in_column = int(self.cursorX/16)
+            cellsee = self.boardmatrix[position_in_column][position_in_row]    
+            cellsee.cellclass = Umbrella(position_in_row, position_in_column)
+            cellsee.cellclass.used = True
         if pyxel.btnp(pyxel.KEY_K):
             position_in_row = int(self.cursorY/16) 
-            position_in_column = int(self.cursorX/16)    
-            self.boardmatrix[position_in_column][position_in_row].element = "BLOCKER"
+            position_in_column = int(self.cursorX/16)
+            cellsee = self.boardmatrix[position_in_column][position_in_row]    
+            cellsee.cellclass = Blocker(position_in_row, position_in_column)
+            cellsee.cellclass.used = True
         
 
         ## GOD MODE: WE CAN CREATE AS MUCH PLATFORMS AS WE WANT WITH THIS CODE BELOW
@@ -316,24 +348,33 @@ class Maingame:
         if pyxel.btnp(pyxel.KEY_P):
             position_in_row = int(self.cursorY/16) 
             position_in_column = int(self.cursorX/16)
-            self.boardmatrix[position_in_column][position_in_row].element = "FLOOR"
+            cellsee.cellclass = Platform(position_in_row, position_in_column)
+
+
+
     
     # THIS IS ALL THE CODE TO LEMMING MOVEMENT AND INTERACTION BETWEEN OBJECTS
     
     def update_lemmings_movement(self):
         
-        ##ELEMENT CHECKERS
+        ##cellclass CHECKERS
 
-        self.element_of_cell_right = self.boardmatrix[int(self.lemming.lemx//16)+1][int(self.lemming.lemy//16)].element
-        self.element_of_cell_below_right = self.boardmatrix[int(self.lemming.lemx//16)][int((self.lemming.lemy//16)+1)].element
-        self.element_of_cell_left = self.boardmatrix[int(self.lemming.lemx//16)][int(self.lemming.lemy//16)].element
-        self.element_of_cell_below_left = self.boardmatrix[int(self.lemming.lemx//16)][int(self.lemming.lemy//16)+1].element
+        self.cellclass_of_cell_right = self.boardmatrix[int(self.lemming.lemx//16)+1][int(self.lemming.lemy//16)].cellclass
+        self.cellclass_of_cell_below_right = self.boardmatrix[int(self.lemming.lemx//16)][int((self.lemming.lemy//16)+1)].cellclass
+        self.cellclass_of_cell_left = self.boardmatrix[int(self.lemming.lemx//16)][int(self.lemming.lemy//16)].cellclass
+        self.cellclass_of_cell_below_left = self.boardmatrix[int(self.lemming.lemx//16)][int(self.lemming.lemy//16)+1].cellclass
 
         ## COLLISION WITH SIDE FLOORS AND BLOCKERS
 
-        if  ((self.element_of_cell_right == "FLOOR" or self.element_of_cell_left == "FLOOR") or
-            (self.element_of_cell_right == "BLOCKER-PH" or self.element_of_cell_left == "BLOCKER-PH")):
-            self.lemming.changeDirection()
+        if  ((isinstance(self.cellclass_of_cell_right, Platform) == True or isinstance(self.cellclass_of_cell_left, Platform) == True) or
+            (isinstance(self.cellclass_of_cell_right, Blocker) == True or isinstance(self.cellclass_of_cell_left, Blocker) == True)):
+            
+            if self.lemming.direction == "R":
+                self.lemming.change_sprite("walking1_L")
+                self.lemming.changeDirection()
+            else:
+                self.lemming.change_sprite("walking1_R")
+                self.lemming.changeDirection()
         else:
             self.lemming.move()
         
@@ -344,40 +385,53 @@ class Maingame:
 
         ## FALLING LEMMING
         
-        if (self.element_of_cell_below_right != "FLOOR"  
-            or (self.element_of_cell_below_left != "FLOOR" and self.lemming.direction == "L")):
+        if (isinstance(self.cellclass_of_cell_below_right, Platform) == False 
+            or (isinstance(self.cellclass_of_cell_below_left, Platform) == False and self.lemming.direction == "L")):
             
             self.lemming.falling = True
             self.lemming.fall()
+            self.lemming.change_sprite("falling")
+            if self.lemming.falling_with_umbrella == True:
+                self.lemming.change_sprite("Umbrella falling")
+
         
         ## COLLISION WITH UMBRELLA OBJECT
 
-        if self.element_of_cell_below_right == "UMBRELLA-PH":
-            self.element_of_cell_below_right = "UMBRELLA" 
+        if isinstance(self.cellclass_of_cell_below_right, Umbrella) == True:
+            self.cellclass_of_cell_below_right.used = True 
             self.lemming.change_sprite("Umbrella falling")
             self.lemming.falling_with_umbrella = True
         
         ## REACHING FLOOR WITH AN UMBRELLA
         
-        if (self.lemming.falling == True and self.element_of_cell_below_right == "FLOOR"):
+        if (self.lemming.falling == True and isinstance(self.cellclass_of_cell_below_right, Platform) == True):
             if self.lemming.falling_with_umbrella == True:
                 self.lemming.falling = False
                 self.lemming.falling_with_umbrella = False
-                self.lemming.change_sprite("walking1_R")
                 self.lemming.move()
-            else:
-                self.lemming.died = True
-                
-        # LEMMINGS DIE WHEN REACHING LAVA        
+                if self.lemming.direction == "R":
+                    self.lemming.change_sprite("walking1_R")
+                else:
+                    self.lemming.change_sprite("walking1_L")
 
-        if (self.lemming.falling == True and self.element_of_cell_below_right == "LAVA"):
+                
+            else:
+                self.lemming.die()
+                
+        # LEMMINGS DIE WHEN REACHING LAVA (CODE NOT IMPLEMENTED, READ INFO IN LAVA MODULE)       
+        """
+        if (self.lemming.falling == True and isinstance(self.cellclass_of_cell_below_right, Lava) == True):
                 self.lemming.lava = True
                 self.lemming.died = True
-
+        """
         # COLLISION WITH EDGES OF THE GAME
             
-        if self.lemming.lemx == WIDTH -16 or self.lemming.lemx == 0:
+        if self.lemming.lemx >= WIDTH -16 or self.lemming.lemx <= 0:
             self.lemming.changeDirection()
+            if self.lemming.direction == "R":
+                self.lemming.change_sprite("walking1_L")
+            else:
+                self.lemming.change_sprite("walking1_R")
 
 
     #def update_lemming_using_tools(self): ????
@@ -432,38 +486,52 @@ class Maingame:
 
         if self.lemming.sprite == "walking1_R":
             pyxel.blt(self.lemming.lemx, self.lemming.lemy,0,32,16,16,16)
+        if self.lemming.sprite == "walking1_L":
+            pyxel.blt(self.lemming.lemx, self.lemming.lemy,0,48,48,16,16)
         if self.lemming.sprite == "Umbrella falling":
             pyxel.blt(self.lemming.lemx, self.lemming.lemy,0,32,48,16,16)
-        if self.lemming.died == True:
+        if self.lemming.sprite == "falling":
+            pyxel.blt(self.lemming.lemx, self.lemming.lemy,0,0,64,16,16)
+        if self.lemming.sprite == "died":
             pyxel.blt(self.lemming.lemx, self.lemming.lemy,0,32,32,16,16)
         
-        # DRAWING ALL THE CELL ELEMENTS OF THE BOARD DEPENDING ON THE .ELEMENT ATTRIBUTE
-
+        # DRAWING ALL THE CELL cellclassS OF THE BOARD DEPENDING ON THE .cellclass ATTRIBUTE
+       
         for i in range(self.cellrow):            
             for j in range(self.cellcolumn):
                 cellcheck=self.boardmatrix[i][j]
-                if cellcheck.element=="RIGHT LADDER-PH":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 32,0,16,16)
-                if cellcheck.element=="LEFT LADDER-PH":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,48,16,16)
-                if cellcheck.element=="UMBRELLA-PH":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 48,0,16,16)
-                if cellcheck.element=="BLOCKER-PH":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,16,16,16)
+                if isinstance(cellcheck.cellclass, Right_Ladder) == True:
+                    if cellcheck.cellclass.used == False:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 32,0,16,16)
+                    else:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,0,16,16)
                 
-                if cellcheck.element=="RIGHT LADDER":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,0,16,16)
-                if cellcheck.element=="LEFT LADDER":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,48,16,16)
-                if cellcheck.element=="UMBRELLA":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,0,16,16)
-                if cellcheck.element=="BLOCKER":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,16,16,16)
-
-                if cellcheck.element=="FLOOR":
+                if isinstance(cellcheck.cellclass, Left_Ladder) == True:
+                    if cellcheck.cellclass.used == False:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,48,16,16)
+                    else:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,48,16,16)
+                
+                if isinstance(cellcheck.cellclass, Umbrella) == True:
+                    if cellcheck.cellclass.used == False:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 48,0,16,16)
+                    else:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,0,16,16)
+                
+                if isinstance(cellcheck.cellclass, Blocker) == True:
+                    if cellcheck.cellclass.used == False:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,16,16,16)
+                    else:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,16,16,16)
+                
+                if isinstance(cellcheck.cellclass, Platform) == True:
                     pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 48,16,16,16)
-                if cellcheck.element == "LAVA":
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16 + 8, 0, 48, 40, 16,8)
+
+                if isinstance(cellcheck.cellclass, Lava) == True:
+                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 48,32,16,16)
+                
+                #if cellcheck.cellclass == "LAVA":
+                    #pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16 + 8, 0, 48, 40, 16,8)
 
 #STARTING OUR APP
 

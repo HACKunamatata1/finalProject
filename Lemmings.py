@@ -1,4 +1,6 @@
 from Constants import *
+from Score import *
+
 class Lemming:
 
 
@@ -13,7 +15,7 @@ class Lemming:
         self.sprite = "walking1_R"
         self.lava = False
         #"walking1_R","walking2_R", "walking1_L","walking2_L",
-        # "falling", "died"
+        # "falling", "died", ""Umbrella falling"", "SAVED"
 
     def changeDirection(self):
         if self.direction=="R":
@@ -39,6 +41,12 @@ class Lemming:
     def change_sprite(self, newsprite):
         
         self.sprite = newsprite
+    
+    def die(self):
+
+        self.died = True
+        self.sprite = "died"
+        
         
          
         
