@@ -1,4 +1,3 @@
-from MainGAME import Maingame
 
 class Entrygate:
 
