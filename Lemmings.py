@@ -1,18 +1,57 @@
-class Lemmings:
-    __cx,__cy=0,0
-    __image=[]
-    __direction="L"
-    __images=[]
+from Constants import *
+from Score import *
+
+class Lemming:
 
 
-    def __init__(self,x,y,direction,icons,fall):
-        self.cx=x
-        self.cy=y
-        self.direction=direction 
-        self.images=icons
-        self.image=icons[0:2]
-        self.falling=fall
+    def __init__(self,x,y):
 
+        self.lemx = x
+        self.lemy = y
+        self.direction= "R" 
+        self.falling= False
+        self.falling_with_umbrella = False
+        self.died = False
+        self.sprite = "walking1_R"
+        self.lava = False
+        #"walking1_R","walking2_R", "walking1_L","walking2_L",
+        # "falling", "died", ""Umbrella falling"", "SAVED"
+
+    def changeDirection(self):
+        if self.direction=="R":
+            self.direction="L"
+            self.lemx-=LEMMINGS_VELOCITY
+            
+        else:
+            self.direction="R"
+            self.lemx+=LEMMINGS_VELOCITY
+            
+    
+    def move(self):
+        if self.direction=="R" and self.falling == False:
+            self.lemx+=LEMMINGS_VELOCITY
+        elif self.direction=="L" and self.falling == False:
+            self.lemx-=LEMMINGS_VELOCITY
+        
+
+    def fall(self):
+        if self.falling == True and self.lava == False:
+            self.lemy += LEMMINGS_VELOCITY
+    
+    def change_sprite(self, newsprite):
+        
+        self.sprite = newsprite
+    
+    def die(self):
+
+        self.died = True
+        self.sprite = "died"
+        
+        
+         
+        
+
+    """
     @property
     def x(self):
         return self.__cx
@@ -44,23 +83,6 @@ class Lemmings:
     @direction.setter
     def direction(self,direction):
         self.__direction=direction
-    
-    def changeDirection(self):
-        if self.__direction=="R":
-            self.__direction="L"
-            self.__cx-=1
-            self.image=[self.__images[0],self.__images[1]]
-        else:
-            self.__direction="R"
-            self.__cx+=1   
-            self.image=[self.__images[0],self.__images[1]]
-    
-    def move(self):
-        if self.direction=="R":
-            self.__cx+=1
-        elif self.direction=="L":
-            self.__cx-=1
-        else:
-            self.__cy+=1
+    """
     
 
