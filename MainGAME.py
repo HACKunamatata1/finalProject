@@ -19,6 +19,7 @@ class Maingame:
     def __init__(self):
 
         pyxel.init(self.wid, self.hei, caption = "Pyxel Lemmings")
+        pyxel.load("assets/my_resource.pyxres")
 
         self.cursorX, self.cursorY = 0, 33      # initial values of user pointer
 
@@ -106,6 +107,18 @@ class Maingame:
         pyxel.text(180,24,("%d" %(self.myscore.blockers)), 10)
 
         pyxel.line(0,32,255,32,10)          # LINE TO SEPARATE THE HEADER WITH THE BOARD
+
+
+        pyxel.blt(
+            self.lemming_x,
+            self.lemming_y,
+            0,
+            16 if self.player_vy > 0 else 0,
+            0,
+            16,
+            16,
+            12,
+        )
 
         """
         for i in range(self.cellrow):            
