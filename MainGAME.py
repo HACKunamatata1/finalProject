@@ -476,29 +476,6 @@ class Maingame:
 
         pyxel.line(0,31,255,31,10)          # LINE TO SEPARATE THE HEADER WITH THE BOARD
 
-<<<<<<< HEAD
-
-        pyxel.blt(
-            self.lemming_x,
-            self.lemming_y,
-            0,
-            16 if self.player_vy > 0 else 0,
-            0,
-            16,
-            16,
-            12,
-        )
-
-        """
-        for i in range(self.cellrow):            
-            for j in range(self.cellcolumn):
-                cellcheck=self.boardmatrix[i][j]
-                if cellcheck.image == "P":
-                    pyxel.text(cellcheck.cellx*16, cellcheck.celly*16, cellcheck.image,6)
-                else:
-                    pyxel.text(cellcheck.cellx*16, cellcheck.celly*16, cellcheck.image,6)
-        """
-=======
        
         #DRAWING ENTRY AND EXIT GATE:
 
@@ -506,7 +483,6 @@ class Maingame:
         pyxel.blt(self.exitgate.exitgate_x,self.exitgate.exitgate_y, 0,16,32,16,16)
 
         # DRAWING SPRITES OF LEMMINGS WHEN THEY COLLIDE WITH THINGS
->>>>>>> a5373114b79ffd73228d31ff2ce13bbbcb8b9c7d
 
         if self.lemming.sprite == "walking1_R":
             pyxel.blt(self.lemming.lemx, self.lemming.lemy,0,32,16,16,16)
@@ -524,20 +500,6 @@ class Maingame:
         for i in range(self.cellrow):            
             for j in range(self.cellcolumn):
                 cellcheck=self.boardmatrix[i][j]
-<<<<<<< HEAD
-                #pyxel.text(cell.x*16, cell.y*16, cell.image,1)
-                if cellcheck.element=="L":
-                    pyxel.text(cellcheck.cellx*16, cellcheck.celly*16, cellcheck.element,5)
-                if cellcheck.element=="U":
-                    pyxel.text(cellcheck.cellx*16, cellcheck.celly*16, cellcheck.element,5)                    
-                if cellcheck.element=="B":
-
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 1, 0,0,16,16)
-                    """
-                    pyxel.text(cellcheck.cellx*16, cellcheck.celly*16, cellcheck.element,5)             
-                    """
-                  
-=======
                 if isinstance(cellcheck.cellclass, Right_Ladder) == True:
                     if cellcheck.cellclass.used == False:
                         pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 32,0,16,16)
@@ -572,6 +534,5 @@ class Maingame:
                     #pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16 + 8, 0, 48, 40, 16,8)
 
 #STARTING OUR APP
->>>>>>> a5373114b79ffd73228d31ff2ce13bbbcb8b9c7d
 
 Maingame()
