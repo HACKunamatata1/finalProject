@@ -454,7 +454,6 @@ class Maingame:
         
         #pyxel.blt(0,32,2,0,0,256,224)                    # BACKGROUND WALLPAPER IF YOU DONT WANT CLS
 
-        pyxel.rectb(self.cursorX, self.cursorY, 16, 16, 9)  # DRAWING THE PLAYER POINTER
 
         # DRAWING ALL THE HEADER TEXT WITH THE SCORE BOARD 
         #(USED STRING FORMATTING TO AVOID ATTRIBUTE ERRORS(ENCODE UTF-8))
@@ -532,6 +531,9 @@ class Maingame:
                 
                 #if cellcheck.cellclass == "LAVA":
                     #pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16 + 8, 0, 48, 40, 16,8)
+                    
+        pyxel.rectb(self.cursorX, self.cursorY, 16, 16, 9)  # DRAWING THE PLAYER POINTER
+
 
 #STARTING OUR APP
 
