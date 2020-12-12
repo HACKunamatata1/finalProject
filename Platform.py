@@ -1,8 +1,8 @@
 
-import random
-
-
 class Platform:
+
+    """THIS WIL DEFINE A PLATFORM. ATTENTION: A PLATFORM IS NOT A FLOOR.
+    PLATFORMS ONLY OCUPPY ONE CELL. FLOORS ARE GENERATED ON THE MAINGAME() CLASS"""
 
     def __init__(self, platform_x, platform_y):
 

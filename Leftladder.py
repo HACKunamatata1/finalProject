@@ -1,5 +1,7 @@
 class Left_Ladder:
 
+    """ LADDER TOOL """
+
     def __init__(self, ll_x, ll_y):
 
         self.ll_x = ll_x

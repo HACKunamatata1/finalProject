@@ -7,17 +7,15 @@ class Cell:
 
     def __init__(self, x, y):
 
-    # APPROACH IN POSITIONS OF A MATRIX
+    # IMPORTANT: APPROACH IN POSITIONS OF A MATRIX
 
         self.cellx=x
         self.celly=y
         
-        self.cellclass = None
-        self.used = False
-        
-        self.entrygate = False
-        self.lemming = False
-        
+        # VERY IMPORTANT ATTRIBUTE: THIS WILL ALLOW US TO CHECK ALL
+        # THE THINGS INSIDE THE CELLS EVERYTIME
+        self.cellclass = None 
+   
 
 """
     @property

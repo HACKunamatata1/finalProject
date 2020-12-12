@@ -1,5 +1,7 @@
 class Exitgate:
 
+    """CLASS FOR THE EXIT GATE"""
+
     def __init__ (self, myx, myy):
 
         self.exitgate_x = myx

@@ -1,6 +1,8 @@
 
 class Entrygate:
 
+    """ CLASS FOR THE ENTRY GATE """
+
     def __init__(self, myx,myy):
 
         self.entrygate_x = myx
