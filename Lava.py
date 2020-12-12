@@ -1,8 +1,18 @@
 ## IMPORTANT NOTE: THIS CLASS IS NOT IMPLEMENTED ON THE CODE. IT HAS TO BE
-## ACTIVATED BY COMMENTING THE CODE THAT GENERATES THE SUPERFLOOR
-## AND ACTIVATING THE ONE THAT GENERATES LAVA
+## ACTIVATED BY DISABLE COMMENTING THE CODE THAT GENERATES THE SUPERFLOOR
+## AND ACTIVATING THE ONE THAT GENERATES LAVA. ALSO ACTIVATING THE LAVA INTERACTIONS
+## ON THE UPDATE() FUNCTION OF MAINGAME.
+
+## Comentario en español: en realidad la lava es el código original: en el pdf nos 
+## pedis que generemos 7 suelos, pero era complicado programar con el suelo
+## de abajo rodeada de lava, así que llenamos la parte de abajo con un gran suelo para
+## evitar que los lemmings se muriesen al caer constantemente. Pero lo que pedís en el 
+## pdf está implementado.
 
 class Lava:
+
+    """THIS WILL FILL THE BOTTOM OF THE BOARD WITH A SEA OF LAVA.
+    IF A LEMMING TOUCHES IT IT WILL DIE."""
 
     def __init__(self, lava_x, lava_y):
 
