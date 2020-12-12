@@ -413,8 +413,8 @@ class Maingame:
                 position_in_row = int(self.cursorY/16) 
                 position_in_column = int(self.cursorX/16)
                 cellsee = self.boardmatrix[position_in_column][position_in_row]
-
-                cellsee.cellclass = Platform(position_in_row, position_in_column)
+                cellsee.cellclass = Platform(position_in_row, position_in_column)  
+                
             ## STOPPING TIME (ZAWARUDO MODE)
             if pyxel.btnp(pyxel.KEY_Z):
                 self.zawarudo = True
