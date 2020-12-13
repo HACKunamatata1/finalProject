@@ -23,4 +23,7 @@ MAX_LEMMINGS= random.randint(10,20)          # NUMBER OF LEMMINGS THAT WILL APPE
 MAX_LADDERS = random.randint(5,10)
 MAX_UMBRELLAS = random.randint(5,10)
 MAX_BLOCKERS = random.randint(5,10)
+<<<<<<< HEAD
 MAX_SHOVELS = random.randint(5,10)
+=======
+>>>>>>> dccdd06491934ff053f0fd31534a848260499829
