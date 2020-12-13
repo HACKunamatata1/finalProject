@@ -37,7 +37,7 @@ class Lemming:
         self.sprite = ""
 
         ## LIST OF SPRITES:
-        ## "walking1_R","walking2_R", "walking1_L","walking2_L",
+        ## "walking_R", "walking_L",
         ## "falling", "died", ""Umbrella falling"", 
         
         #state of blocker tool touching
