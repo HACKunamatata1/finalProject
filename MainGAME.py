@@ -80,7 +80,7 @@ class Maingame:
 
         self.available_column_positions = (48,80,112,144,176,208,240) ## fixed values for starting platform x pos
 
-        self.available_row_positions = (0,16,32,48,64,80)             ## fixed values for starting platform y pos
+        self.available_row_positions = (0,16,32,48,64)             ## fixed values for starting platform y pos
 
         self.platforms = []                                           ## list with all the platforms
 
@@ -138,6 +138,7 @@ class Maingame:
         # INITIALIZING THE LEMMINGS LISTS: 
 
         self.list_of_lemmings = []
+        self.list_of_appeared_lemmings = []
 
         pyxel.run(self.update, self.draw)
 
@@ -240,7 +241,7 @@ class Maingame:
             
             ### sound effect
 
-            pyxel.play(2,9)            
+            pyxel.play(3,9)            
             
         # LEFT LADDER        
 
@@ -278,7 +279,7 @@ class Maingame:
                             self.myscore.addBlocker()
                         cellsee.cellclass = Left_Ladder(position_in_row, position_in_column)
                         self.myscore.delLadder()
-            pyxel.play(2,9)            
+            pyxel.play(3,9)            
 
         # UMBRELLA   
 
@@ -318,7 +319,7 @@ class Maingame:
                             self.myscore.addBlocker()
                         cellsee.cellclass = Umbrella(position_in_row, position_in_column)
                         self.myscore.delUmbrella()
-            pyxel.play(2,9)
+            pyxel.play(3,9)
 
         #BLOCKER                
 
@@ -359,7 +360,7 @@ class Maingame:
                             self.myscore.addUmbrella()
                         cellsee.cellclass = Blocker(position_in_row, position_in_column)
                         self.myscore.delBlocker()
-            pyxel.play(2,9)
+            pyxel.play(3,9)
                         
         #just for testing(ignore this): 
         # CREATING USED OBJECTS FOR SCORE TESTING:
@@ -399,11 +400,11 @@ class Maingame:
         ## ACTIVATE GOD MODE
         if pyxel.btnp(pyxel.KEY_V): 
             self.god_mode = True
-            pyxel.play(1,15)
+            pyxel.play(3,15)
         ## DISABLE GOD MODE
         if pyxel.btnp(pyxel.KEY_B): 
             self.god_mode = False
-            pyxel.play(1,15)
+            pyxel.play(3,15)
 
         
         if self.god_mode == True:
@@ -418,11 +419,11 @@ class Maingame:
             ## STOPPING TIME (ZAWARUDO MODE)
             if pyxel.btnp(pyxel.KEY_Z):
                 self.zawarudo = True
-                pyxel.play(1,16)
+                pyxel.play(3,16)
             ## DISABLING ZAWARUDO MODE
             if pyxel.btnp(pyxel.KEY_X):
                 self.zawarudo = False
-                pyxel.play(1,16)
+                pyxel.play(3,16)
 
 
     
@@ -436,17 +437,20 @@ class Maingame:
             if len(self.list_of_lemmings)<MAX_LEMMINGS:
                 self.list_of_lemmings.append(Lemming(self.entrygate.entrygate_x, self.entrygate.entrygate_y))
                 self.myscore.addlemming()
-        
-        for i in self.list_of_lemmings:
             
-            counter = 0
-            counter = pyxel.frame_count 
+        counter = 0
+        counter = pyxel.frame_count 
 
-            if counter == 50: 
-                i.appeared = True
-                i.checker_appeared = True
-                pyxel.play(3,10) 
-
+        if counter % 50 == 0:
+            if len(self.list_of_appeared_lemmings)< len(self.list_of_lemmings):
+                self.list_of_appeared_lemmings.append(Lemming(self.entrygate.entrygate_x, self.entrygate.entrygate_y)) 
+                #pyxel.play(2,10) sound of lemmings appearing
+                for i in self.list_of_appeared_lemmings:
+                        i.appeared = True
+                        i.checker_appeared = True
+        
+                     
+                
 
 
     # THIS IS ALL THE CODE TO LEMMING MOVEMENT AND INTERACTION BETWEEN OBJECTS
@@ -455,7 +459,7 @@ class Maingame:
         
         
 
-        for i in self.list_of_lemmings:
+        for i in self.list_of_appeared_lemmings:
 
             ##cellclass CHECKERS: RIGHT, LEFT AND BELOW
 
@@ -464,6 +468,8 @@ class Maingame:
             self.cellclass_of_cell_left = self.boardmatrix[int(i.lemx//16)][int(i.lemy//16)].cellclass
             self.cellclass_of_cell_below_left = self.boardmatrix[int(i.lemx//16)][int(i.lemy//16)+1].cellclass
             
+            self.cellclass_of_cell_right_blocker = self.boardmatrix[int(i.lemx//16)+1][int(i.lemy//16)].cellclass
+            self.cellclass_of_cell_left_blocker = self.boardmatrix[int(i.lemx//16)-1][int(i.lemy//16)].cellclass
             # MOVEMENT AND INTERACTION WITH ALL OBJECTS
             
             if self.zawarudo == False:
@@ -471,37 +477,37 @@ class Maingame:
                 if i.appeared == True:                             ## check if lemmings have appeared
 
                     if i.checker_appeared == True:                 ## just to establish the initial sprite
-                        i.change_sprite("walking1_R")
+                        i.change_sprite("walking_R")
                         i.checker_appeared = False
 
                     if i.died == False or i.saved == False:        ## check that they aren't saved or they didn't die
                         
-                        ## COLLISION WITH SIDE FLOORS AND BLOCKER LEMMINGS
+                        ## COLLISION WITH SIDE PLATFORMS AND BLOCKER LEMMINGS
 
                         if ((isinstance(self.cellclass_of_cell_right, Platform) == True 
                             or isinstance(self.cellclass_of_cell_left, Platform) == True)
-                            or(isinstance(self.cellclass_of_cell_right, Blocker_lemming) == True 
-                                or isinstance(self.cellclass_of_cell_left, Blocker_lemming) == True)):
+                            or(isinstance(self.cellclass_of_cell_right_blocker, Blocker_lemming) == True 
+                                or isinstance(self.cellclass_of_cell_left_blocker, Blocker_lemming) == True)):
                             
                             if i.direction == "R":
-                                i.change_sprite("walking1_L")
+                                i.change_sprite("walking_L")
                                 i.changeDirection()                 ### changing directions of lemming
                             else:
-                                i.change_sprite("walking1_R")
+                                i.change_sprite("walking_R")
                                 i.changeDirection()
                         else:
                             if i.being_blocker == False:            ### checking that they don't move if they are a blocker
                                 i.move()
                             
                     ## COLLISION WITH BLOCKER OBJECT TO TRANSFORM THE LEMMING
+                    
                     if isinstance(self.cellclass_of_cell_right, Blocker) == True:
-
                         if i.checker_blocker == False:              ### just a checker to play the sound effect correctly
                             pyxel.play(2,13)
                         i.converting_to_blocker()                   ### transforming the lemming
-                        self.cellclass_of_cell_right.used = True    ### making the blocker tool used
+                        self.cellclass_of_cell_right.used = True    ### making the blocker tool dissapear
                         
-                        Blocker_lemming(i.lemx,i.lemy)              ### creating a Lemming blocker on the stablished position
+                        self.boardmatrix[int(i.lemx/16)][int(i.lemy/16)].cellclass = Blocker_lemming(i.lemx,i.lemy) ### creating a Lemming blocker on the stablished position
 
                     if isinstance(self.cellclass_of_cell_left, Blocker) == True:
 
@@ -510,7 +516,8 @@ class Maingame:
                         i.converting_to_blocker()
                         self.cellclass_of_cell_left.used = True
                         
-                        Blocker_lemming(i.lemx,i.lemy)
+                        self.boardmatrix[int(i.lemx/16)][int(i.lemy/16)].cellclass = Blocker_lemming(i.lemx,i.lemy) ### creating a Lemming blocker on the stablished position
+
 
                     ## COLLISION WITH EXIT GATE: SAVING THE LEMMINGS AND ENDING THE GAME
                     
@@ -561,9 +568,9 @@ class Maingame:
                             ### making the lemming move again
                             i.move()
                             if i.direction == "R":
-                                i.change_sprite("walking1_R")
+                                i.change_sprite("walking_R")
                             else:
-                                i.change_sprite("walking1_L")
+                                i.change_sprite("walking_L")
 
                         else:               
                             ## THIS WILL HAPPEN IF LEMMING FALL WITHOUT UMBRELLA. IT WILL DIE
@@ -589,9 +596,9 @@ class Maingame:
                     if i.lemx >= WIDTH -16 or i.lemx <= 0:
                         i.changeDirection()
                         if i.direction == "R":
-                            i.change_sprite("walking1_R")
+                            i.change_sprite("walking_R")
                         else:
-                            i.change_sprite("walking1_L")
+                            i.change_sprite("walking_L")
 
     # CALLING THE MAIN UPDATE FUNCTION
 
@@ -651,25 +658,29 @@ class Maingame:
         # DRAWING SPRITES OF LEMMINGS WHEN THEY COLLIDE WITH THINGS,
         # AND WHEN THEY MOVE, FALL AND DIE.
 
-        for i in self.list_of_lemmings:
+        for i in self.list_of_appeared_lemmings:
         
             if i.deactivate == False:
-                if i.sprite == "walking1_R":
-                    pyxel.blt(i.lemx, i.lemy,0,32,16,16,16,0)
-                if i.sprite == "walking2_R":
-                    pyxel.blt(i.lemx, i.lemy,0,64,32,16,16,0)
-                if i.sprite == "walking1_L":
-                    pyxel.blt(i.lemx, i.lemy,0,48,48,16,16,0)
-                if i.sprite == "walking2_L":
-                    pyxel.blt(i.lemx, i.lemy,0,64,48,16,16,0)
+                if i.sprite == "walking_R":
+                    if pyxel.frame_count % 5 == 0:
+                        pyxel.blt(i.lemx, i.lemy,0,32,16,16,16,0)
+                    else:
+                        pyxel.blt(i.lemx, i.lemy,0,32,64,16,16,0)
+                    
+                if i.sprite == "walking_L":
+                    if pyxel.frame_count % 5 == 0:
+                        pyxel.blt(i.lemx, i.lemy,0,48,48,16,16,0)
+                    else:
+                        pyxel.blt(i.lemx, i.lemy,0,48,64,16,16,0)   
                 if i.sprite == "Umbrella falling":
                     pyxel.blt(i.lemx, i.lemy,0,32,48,16,16,0)
                 if i.sprite == "falling":
                     pyxel.blt(i.lemx, i.lemy,0,0,64,16,16,0)
-                if i.sprite == "died":
-                    pyxel.blt(i.lemx, i.lemy,0,32,32,16,16,0)
                 if i.sprite == "Blocker":
                     pyxel.blt(i.lemx, i.lemy,0,16,64,16,16,0)
+            if i.sprite == "died":
+                pyxel.blt(i.lemx, i.lemy,0,32,32,16,16,0)
+                
         
         # DRAWING ALL THE CELL cellclass OF THE BOARD DEPENDING ON THE .cellclass ATTRIBUTE
         # We check all the cells and we draw what's inside of it.
