@@ -88,7 +88,7 @@ class Maingame:
 
             ##FIRST WE CREATE A START PLATFORM OF 16X16 AND THEN WE EXTEND IT
 
-            xposition = self.available_row_positions[random.randint(0,4)]
+            xposition = self.available_row_positions[random.randint(0,5)]
             yposition = self.available_column_positions[i]
 
             boardplatform_start = Platform(xposition, yposition)
@@ -399,11 +399,11 @@ class Maingame:
         ## ACTIVATE GOD MODE
         if pyxel.btnp(pyxel.KEY_V): 
             self.god_mode = True
-            pyxel.play(1,15)
+            pyxel.play(2,15)
         ## DISABLE GOD MODE
         if pyxel.btnp(pyxel.KEY_B): 
             self.god_mode = False
-            pyxel.play(1,15)
+            pyxel.play(2,15)
 
         
         if self.god_mode == True:
@@ -418,11 +418,11 @@ class Maingame:
             ## STOPPING TIME (ZAWARUDO MODE)
             if pyxel.btnp(pyxel.KEY_Z):
                 self.zawarudo = True
-                pyxel.play(1,16)
+                pyxel.play(2,16)
             ## DISABLING ZAWARUDO MODE
             if pyxel.btnp(pyxel.KEY_X):
                 self.zawarudo = False
-                pyxel.play(1,16)
+                pyxel.play(2,16)
 
 
     
@@ -476,7 +476,7 @@ class Maingame:
 
                     if i.died == False or i.saved == False:        ## check that they aren't saved or they didn't die
                         
-                        ## COLLISION WITH SIDE FLOORS AND BLOCKER LEMMINGS
+                        ## COLLISION WITH SIDE PLATFORMS AND BLOCKER LEMMINGS
 
                         if ((isinstance(self.cellclass_of_cell_right, Platform) == True 
                             or isinstance(self.cellclass_of_cell_left, Platform) == True)
@@ -494,8 +494,8 @@ class Maingame:
                                 i.move()
                             
                     ## COLLISION WITH BLOCKER OBJECT TO TRANSFORM THE LEMMING
+                    
                     if isinstance(self.cellclass_of_cell_right, Blocker) == True:
-
                         if i.checker_blocker == False:              ### just a checker to play the sound effect correctly
                             pyxel.play(2,13)
                         i.converting_to_blocker()                   ### transforming the lemming
