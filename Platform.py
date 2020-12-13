@@ -28,3 +28,10 @@ class Platform:
 
     def platform_y(self, platform_y):
         self.__platform_y = platform_y
+
+class Destroyed_platform:
+
+    def __init__(self,x,y):
+
+        self.dsp_x = y
+        self.dsp_y = y

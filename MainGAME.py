@@ -19,6 +19,7 @@ from Rightladder import *
 from Leftladder import *
 from Umbrella import *
 from Blocker import *
+from Shovel import *
 
 
 
@@ -392,6 +393,16 @@ class Maingame:
             cellsee.cellclass = Blocker(position_in_row, position_in_column)
             cellsee.cellclass.used = True
         
+        #shovel (testing)
+        
+        if pyxel.btnp(pyxel.KEY_E):
+
+            position_in_row = int(self.cursorY/16) 
+            position_in_column = int(self.cursorX/16)
+            cellsee = self.boardmatrix[position_in_column][position_in_row]    
+            cellsee.cellclass = Shovel(position_in_row, position_in_column)
+            
+        
 
         # GOD MODE: WE CAN CREATE AS MUCH PLATFORMS AS WE WANT WITH THIS CODE BELOW.
         # ALSO, THE ZAWARUDO VARIABLE ALLOWS THE PLAYER TO STOP TIME, AND THEREFORE,
@@ -495,6 +506,11 @@ class Maingame:
                             else:
                                 i.change_sprite("walking_R")
                                 i.changeDirection()
+
+                        elif (isinstance(self.cellclass_of_cell_right, Shovel) == True
+                                or isinstance(self.cellclass_of_cell_left, Shovel) == True):
+                            self.cellclass_of_cell_below_right = Destroyed_platform(int(i.lemx//16),int(i.lemx//16)+1)
+                            
                         else:
                             if i.being_blocker == False:            ### checking that they don't move if they are a blocker
                                 i.move()
@@ -530,6 +546,10 @@ class Maingame:
                                 i.deactivate = True
                                 pyxel.play(3,11)
                                 self.myscore.dellemming_saved()    ###adding to score  
+                    
+                    ## COLLISION WITH SHOVEL
+                    
+
 
                 ## IMPORTANT NOTE: THERE IS A SOMETIMES BUG WHEN FALLING FROM THE LEFT OF A PLATFORM. 
                 ## DESPITE BEING SEARCHING SOLUTIONS FOR HOURS
@@ -705,8 +725,14 @@ class Maingame:
                     else:
                         pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,16,16,16,0)
                 
+                if isinstance(cellcheck.cellclass, Shovel) == True:
+                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,80,16,16,0)
+
                 if isinstance(cellcheck.cellclass, Platform) == True:
                     pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 48,16,16,16,0)
+                
+                if isinstance(cellcheck.cellclass, Destroyed_platform) == True:
+                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,80,16,16,0)
 
                 # LAVA NOT IMPLEMENTED
                 if isinstance(cellcheck.cellclass, Lava) == True:
