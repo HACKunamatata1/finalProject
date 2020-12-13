@@ -4,3 +4,4 @@ class Shovel:
 
         self.shovel_x = y
         self.shovel_y = y
+        self.used = False

@@ -1,4 +1,4 @@
-from Constants import MAX_LADDERS,MAX_UMBRELLAS,MAX_BLOCKERS
+from Constants import MAX_LADDERS,MAX_UMBRELLAS,MAX_BLOCKERS, MAX_SHOVELS
 
 class Score:
 
@@ -13,6 +13,7 @@ class Score:
         self.ladders = MAX_LADDERS
         self.umbrellas = MAX_UMBRELLAS
         self.blockers = MAX_BLOCKERS
+        self.shovels = MAX_SHOVELS
     
     # AND NOW WE WILL DEFINE ALL METHODS TO CHANGE THE SCORE WHILE THE GAME 
     # IS RUNNING
@@ -45,5 +46,11 @@ class Score:
 
     def delBlocker(self):
         self.blockers-=1
+    
+    def addShovel(self):
+        self.shovels+=1
+
+    def delShovel(self):
+        self.shovels-=1
 
     
