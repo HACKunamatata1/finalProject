@@ -615,14 +615,7 @@ class Maingame:
       
     def draw(self):
 
-<<<<<<< HEAD
-        pyxel.cls(self.backgroundcolor)
-        
-        #pyxel.blt(0,32,2,0,0,256,224)                    # BACKGROUND WALLPAPER IF YOU DONT WANT CLS
-
-=======
         """ THIS FUNCTION IS DEFINED TO DRAW ALL THE GAME ELEMENTS"""
->>>>>>> 2a2a1af094adbf4b50bdc5d6e9ce15383542ab63
 
         #pyxel.cls(self.backgroundcolor)
         
@@ -721,13 +714,6 @@ class Maingame:
                 
         # DRAWING PLAYER POINTER        
                 
-<<<<<<< HEAD
-                #if cellcheck.cellclass == "LAVA":
-                    #pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16 + 8, 0, 48, 40, 16,8)
-                    
-        pyxel.rectb(self.cursorX, self.cursorY, 16, 16, 9)  # DRAWING THE PLAYER POINTER
-
-=======
         pyxel.rectb(self.cursorX, self.cursorY, 16, 16, 8)  
 
         # DRAWING WINNING AND LOSING FACES (Happy and sad)
@@ -736,7 +722,6 @@ class Maingame:
             pyxel.blt(96,96,2,0,32,64,64)
         if self.myscore.saved == MAX_LEMMINGS:
             pyxel.blt(96,96,2,64,32,64,64)
->>>>>>> 2a2a1af094adbf4b50bdc5d6e9ce15383542ab63
 
 #And finally....STARTING OUR APP
 
