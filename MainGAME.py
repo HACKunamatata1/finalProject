@@ -494,7 +494,6 @@ class Maingame:
         for i in self.list_of_appeared_lemmings:
 
             ##cellclass CHECKERS: RIGHT, LEFT AND BELOW
-
             self.cellclass_of_cell_right = self.boardmatrix[int(i.lemx//16)+1][int(i.lemy//16)].cellclass
             self.cellclass_of_cell_below_right = self.boardmatrix[int(i.lemx//16)][int((i.lemy//16)+1)].cellclass
             self.cellclass_of_cell_left = self.boardmatrix[int(i.lemx//16)][int(i.lemy//16)].cellclass
@@ -626,11 +625,55 @@ class Maingame:
                             if i.deactivate == False:
                                 i.deactivate = True
                                 pyxel.play(3,14)
-                                self.myscore.dellemming_died()
+                                self.myscore.desllemming_died()
                             
+                ##ENCOUNTER WITH RIGHT LADDER
 
+                    if(isinstance(self.cellclass_of_cell_left,Right_Ladder) or isinstance(self.cellclass_of_cell_right,Right_Ladder)):
+                        i.direction="U"
+                        i.move()
+                        i.falling = False
+                        i.fall()
+                        if((isinstance(self.cellclass_of_cell_below_left,Platform)==False 
+                        or isinstance(self.cellclass_of_cell_below_right,Platform)==False) and
+                        isinstance(self.cellclass_of_cell_below_left,Right_Ladder)==True):
+                            i.direction="U"
+                            i.move()
+                            i.falling = False
+                            i.fall()
+                            i.sprite="Builder"
 
+                        elif(isinstance(self.cellclass_of_cell_below_right,None)
+                        or isinstance(self.cellclass_of_cell_below_left,None)):
+                            i.falling=True
+                            i.fall()
+                        else:
+                            i.falling=True
+                            i.fall()
                         
+                ##ENCOUNTER WITH LEFT LADDER
+
+                    if(isinstance(self.cellclass_of_cell_left,Left_Ladder) or isinstance(self.cellclass_of_cell_right,Left_Ladder)):
+                        i.direction="D"
+                        i.move()
+                        i.falling = False
+                        i.fall()
+                        if((isinstance(self.cellclass_of_cell_below_left,Platform)==False 
+                        or isinstance(self.cellclass_of_cell_below_right,Platform)==False) and
+                        isinstance(self.cellclass_of_cell_below_left,Left_Ladder)==True):
+                            i.direction="D"
+                            i.move()
+                            i.falling = False
+                            i.fall()
+                            i.sprite="Builder"
+
+                        elif(isinstance(self.cellclass_of_cell_below_right,None)
+                        or isinstance(self.cellclass_of_cell_below_left,None)):
+                            i.falling=True
+                            i.fall()
+                        else:
+                            i.falling=True
+                            i.fall()
                         
                     # LEMMINGS DIE WHEN REACHING LAVA (CODE NOT IMPLEMENTED, READ INFO IN LAVA MODULE)       
                     """
@@ -720,6 +763,8 @@ class Maingame:
                     pyxel.blt(i.lemx, i.lemy,0,0,64,16,16,0)
                 if i.sprite == "Blocker":
                     pyxel.blt(i.lemx, i.lemy,0,16,64,16,16,0)
+                if i.sprite =="Builder":                            #Draws the sprite for the ladder builder
+                    pyxel.blt(i.lemx,i.lemy,0,0,80,16,16,0)
             if i.sprite == "died":
                 pyxel.blt(i.lemx, i.lemy,0,32,32,16,16,0)
                 

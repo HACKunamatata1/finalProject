@@ -52,6 +52,12 @@ class Lemming:
             self.lemx+=LEMMINGS_VELOCITY
         elif self.direction=="L" and self.falling == False:
             self.lemx-=LEMMINGS_VELOCITY  
+        elif self.direction=="U":
+            self.lemy-=1
+            self.lemx+=1
+        elif self.direction=="D":
+            self.lemy+=1
+            self.lemx+=1
         
     def changeDirection(self):
 
@@ -99,8 +105,13 @@ class Lemming:
         self.being_blocker = True
         self.sprite = "Blocker"
         self.checker_blocker = True
-         
+
         
+         
+    """def converting_to_builder(self): #This is to change the sprite when encountering a ladder
+        self.being_builder=True
+        self.sprite="Builder"
+        self.checker_ladder= True"""
 
     """
     @property
