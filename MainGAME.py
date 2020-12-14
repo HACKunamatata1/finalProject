@@ -19,6 +19,7 @@ from Rightladder import *
 from Leftladder import *
 from Umbrella import *
 from Blocker import *
+from Shovel import *
 
 
 
@@ -391,11 +392,42 @@ class Maingame:
             cellsee = self.boardmatrix[position_in_column][position_in_row]    
             cellsee.cellclass = Blocker(position_in_row, position_in_column)
             cellsee.cellclass.used = True
+
+
+
+        
+        #EXTRA FEATURES:
+        #   SHOVEL: SHOVEL WILL BE USED ONE TIME (PLATFORM ARE DESTROYED ONCE) 
+        #   SO THERE IS NO NEED TO MAKE A PLACE HOLDER FOR THIS ONE.
+        #   SUBSTITUTION FOR OTHER TOOLS ARE NO IMPLEMENTED ON THIS ONE
+        #   SPRITE OF DESTROYED PLATFORM IS DRAWN ON PYXEL EDITOR 
+        #   UT WE DIN'T FIGURE OUT HOW TO DRAW IT ON THE GAME
+
+        if pyxel.btnp(pyxel.KEY_E):
+
+            position_in_row = int(self.cursorY/16) 
+            position_in_column = int(self.cursorX/16)
+            cellsee = self.boardmatrix[position_in_column][position_in_row]
+
+            if (isinstance(cellsee.cellclass, Shovel) == True and
+                cellsee.cellclass.used == False):
+                    self.myscore.addShovel()
+                    cellsee.cellclass = None
+            else:
+                if self.myscore.shovels != 0:
+                    cellsee.cellclass = Shovel(position_in_row, position_in_column)
+                    self.myscore.delShovel() 
+
+            pyxel.play(3,9)   
+                            
+                            
+            
+            
         
 
-        # GOD MODE: WE CAN CREATE AS MUCH PLATFORMS AS WE WANT WITH THIS CODE BELOW.
-        # ALSO, THE ZAWARUDO VARIABLE ALLOWS THE PLAYER TO STOP TIME, AND THEREFORE,
-        # THE LEMMINGS MOVEMENT.
+        #   GOD MODE: WE CAN CREATE AS MUCH PLATFORMS AS WE WANT WITH THIS CODE BELOW.
+        #   ALSO, THE ZAWARUDO VARIABLE ALLOWS THE PLAYER TO STOP TIME, AND THEREFORE,
+        #   THE LEMMINGS MOVEMENT.
 
         ## ACTIVATE GOD MODE
         if pyxel.btnp(pyxel.KEY_V): 
@@ -495,6 +527,17 @@ class Maingame:
                             else:
                                 i.change_sprite("walking_R")
                                 i.changeDirection()
+
+                        #COLLISION WITH SHOVEL AND DESTROYING THE PLATFORM BELOW:
+
+                        elif isinstance(self.cellclass_of_cell_right, Shovel) == True:
+                            self.cellclass_of_cell_below_right = Destroyed_platform(int(i.lemx//16),int(i.lemx//16)+1)
+                            self.cellclass_of_cell_right.used = True          
+                        elif isinstance(self.cellclass_of_cell_left, Shovel) == True:
+                            self.cellclass_of_cell_below_right = Destroyed_platform(int(i.lemx//16),int(i.lemx//16)+1)
+                            self.cellclass_of_cell_left.used = True
+                        
+                        # IF NOTHING OF ABOVE HAPPENS, LET THE LEMMING MOVE:   
                         else:
                             if i.being_blocker == False:            ### checking that they don't move if they are a blocker
                                 i.move()
@@ -530,6 +573,10 @@ class Maingame:
                                 i.deactivate = True
                                 pyxel.play(3,11)
                                 self.myscore.dellemming_saved()    ###adding to score  
+                    
+                    ## COLLISION WITH SHOVEL
+                    
+
 
                 ## IMPORTANT NOTE: THERE IS A SOMETIMES BUG WHEN FALLING FROM THE LEFT OF A PLATFORM. 
                 ## DESPITE BEING SEARCHING SOLUTIONS FOR HOURS
@@ -633,12 +680,14 @@ class Maingame:
         pyxel.text(180,8,("%d" %(self.myscore.saved)), 10)
         pyxel.text(210,8, "Died:", pyxel.frame_count%16)
         pyxel.text(235,8,("%d" %(self.myscore.died)), 10)
-        pyxel.text(36,22, "Ladders:", 2)
-        pyxel.text(70,22,("%d" %(self.myscore.ladders)), 10)
-        pyxel.text(90,22, "Umbrellas:", 6)
-        pyxel.text(132,22, ("%d" %(self.myscore.umbrellas)), 10)
-        pyxel.text(160,22, "Blockers:", 11)
-        pyxel.text(198,22,("%d" %(self.myscore.blockers)), 10)
+        pyxel.text(0,22, "Ladders:", 2)
+        pyxel.text(34,22,("%d" %(self.myscore.ladders)), 10)
+        pyxel.text(57,22, "Umbrellas:", 6)
+        pyxel.text(96,22, ("%d" %(self.myscore.umbrellas)), 10)
+        pyxel.text(124,22, "Blockers:", 11)
+        pyxel.text(162,22,("%d" %(self.myscore.blockers)), 10)
+        pyxel.text(198,22, "Shovels:", 0)
+        pyxel.text(230,22,("%d" %(self.myscore.shovels)), 10)
 
         pyxel.line(0,31,255,31,10)          # LINE TO SEPARATE THE HEADER WITH THE BOARD
 
@@ -705,8 +754,17 @@ class Maingame:
                     else:
                         pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 0,16,16,16,0)
                 
+                if isinstance(cellcheck.cellclass, Shovel) == True:
+                    if cellcheck.cellclass.used == False:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0,0,96,16,16,0)
+                    else:
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0,0,80,16,16,0)
+
                 if isinstance(cellcheck.cellclass, Platform) == True:
                     pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 48,16,16,16,0)
+                
+                if isinstance(cellcheck.cellclass, Destroyed_platform) == True:
+                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,80,16,16,0)
 
                 # LAVA NOT IMPLEMENTED
                 if isinstance(cellcheck.cellclass, Lava) == True:
