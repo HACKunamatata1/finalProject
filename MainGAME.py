@@ -36,7 +36,7 @@ class Maingame:
         pyxel.load("assets/SPRITES.pyxres")
         
 
-        pyxel.playm(0,loop=True)                     # PLAYING BACKGROUND MUSIC
+        #pyxel.playm(0,loop=True)                     # PLAYING BACKGROUND MUSIC
 
         self.cursorX, self.cursorY = 0, 32           # INITIAL VALUES OF USER POINTER
 
@@ -492,6 +492,7 @@ class Maingame:
         
 
         for i in self.list_of_appeared_lemmings:
+            self.cellclass_of_cell = self.boardmatrix[int(i.lemx//16)][int(i.lemy//16)].cellclass
 
             ##cellclass CHECKERS: RIGHT, LEFT AND BELOW
             self.cellclass_of_cell_right = self.boardmatrix[int(i.lemx//16)+1][int(i.lemy//16)].cellclass
@@ -629,51 +630,42 @@ class Maingame:
                             
                 ##ENCOUNTER WITH RIGHT LADDER
 
-                    if(isinstance(self.cellclass_of_cell_left,Right_Ladder) or isinstance(self.cellclass_of_cell_right,Right_Ladder)):
-                        i.direction="U"
-                        i.move()
-                        i.falling = False
+                    if(isinstance(self.cellclass_of_cell,Right_Ladder)):
+                        i.ladder_collisionUP()
+                        i.falling=False
                         i.fall()
-                        if((isinstance(self.cellclass_of_cell_below_left,Platform)==False 
-                        or isinstance(self.cellclass_of_cell_below_right,Platform)==False) and
-                        isinstance(self.cellclass_of_cell_below_left,Right_Ladder)==True):
-                            i.direction="U"
-                            i.move()
-                            i.falling = False
-                            i.fall()
-                            i.sprite="Builder"
+                        print("Hello")
+                     
+                    if(isinstance(self.cellclass_of_cell_below_left,Right_Ladder)):
+                        i.ladder_colisionDOWN()
+                        i.falling=False
+                        i.fall()   
+                        print("Hell") 
+                    
+                    if(isinstance(self.cellclass_of_cell,Platform)):
+                        i.direction=="R"
+                        print("Heo")
+                    
 
-                        elif(isinstance(self.cellclass_of_cell_below_right,None)
-                        or isinstance(self.cellclass_of_cell_below_left,None)):
-                            i.falling=True
-                            i.fall()
-                        else:
-                            i.falling=True
-                            i.fall()
                         
                 ##ENCOUNTER WITH LEFT LADDER
-
-                    if(isinstance(self.cellclass_of_cell_left,Left_Ladder) or isinstance(self.cellclass_of_cell_right,Left_Ladder)):
-                        i.direction="D"
-                        i.move()
-                        i.falling = False
+               # if i.lemx<=cursorX:
+                    if(isinstance(self.cellclass_of_cell,Left_Ladder)):
+                        i.colision_left_ladder()
+                        print("J")
+                        
+                    if(isinstance(self.cellclass_of_cell_below_left,Left_Ladder)):
+                        i.ladder_colisionDOWN()
+                        i.falling=False
                         i.fall()
-                        if((isinstance(self.cellclass_of_cell_below_left,Platform)==False 
-                        or isinstance(self.cellclass_of_cell_below_right,Platform)==False) and
-                        isinstance(self.cellclass_of_cell_below_left,Left_Ladder)==True):
-                            i.direction="D"
-                            i.move()
-                            i.falling = False
-                            i.fall()
-                            i.sprite="Builder"
-
-                        elif(isinstance(self.cellclass_of_cell_below_right,None)
-                        or isinstance(self.cellclass_of_cell_below_left,None)):
-                            i.falling=True
-                            i.fall()
-                        else:
-                            i.falling=True
-                            i.fall()
+                        print("G")    
+                    
+                    """if(isinstance(self.cellclass_of_cell,Platform)):
+                        i.direction=="R"
+                        print("D")
+                    if(isinstance(self.cellclass_of_cell_below_left,Platform)):
+                        i.direction=="R"
+                        print("S")"""
                         
                     # LEMMINGS DIE WHEN REACHING LAVA (CODE NOT IMPLEMENTED, READ INFO IN LAVA MODULE)       
                     """
