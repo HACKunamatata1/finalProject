@@ -655,7 +655,7 @@ class Maingame:
                             i.ladder_colisionDOWN()
                             i.falling=False
                             i.fall() 
-                            self.cellclass_of_cell.used = True  
+                            self.cellclass_of_cell_below_left.used = True  
                             print("Hell") 
                             if(isinstance(self.cellclass_of_cell,Platform)):
                                 i.direction=="R"
@@ -665,7 +665,7 @@ class Maingame:
                             i.ladder_colisionDOWN_left()
                             i.falling=False
                             i.fall() 
-                            self.cellclass_of_cell.used = True  
+                            self.cellclass_of_cell_below_left.used = True  
                             print("Hell")
                             if(isinstance(self.cellclass_of_cell,Platform)):
                                 i.direction=="R"
@@ -681,15 +681,16 @@ class Maingame:
                # if i.lemx<=cursorX:
                     if(isinstance(self.cellclass_of_cell,Left_Ladder)):
                         i.colision_left_ladder_UP()
+                        self.cellclass_of_cell.used = True
                         print("J")
                         if(isinstance(self.cellclass_of_cell,Platform)):
                                 i.direction=="R"
                                 print("Heo")
                         
-                    if((isinstance(self.cellclass_of_cell_below_left,Left_Ladder)) or
-                    isinstance(self.cellclass_of_cell_below_left,Left_Ladder)):
+                    if(isinstance(self.cellclass_of_cell_below_left,Left_Ladder)):
                         if i.direction=="R":
                             i.ladder_colisionDOWN()
+                            self.cellclass_of_cell_below_left.used = True
                             i.falling=False
                             i.fall()
                             print("G")
