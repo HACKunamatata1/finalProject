@@ -251,6 +251,32 @@ class Lemming:
         self.being_blocker = True
         self.sprite = "Blocker"
         self.checker_blocker = True
+<<<<<<< HEAD
+=======
+
+    def ladder_collisionUP(self):
+        self.lemy-=16
+        self.lemx+=16
+    
+    def colision_left_ladder_UP(self):
+        self.lemy-=16
+        self.lemx-=16
+
+
+    def ladder_colisionDOWN(self):
+        self.lemy+=16
+        self.lemx+=16
+    
+    def ladder_colisionDOWN_left(self):
+        self.lemy+=16
+        self.lemx-=16
+      
+         
+    """def converting_to_builder(self): #This is to change the sprite when encountering a ladder
+        self.being_builder=True
+        self.sprite="Builder"
+        self.checker_ladder= True"""
+>>>>>>> 624e81c49c43a7e8311f6d9d47264eae5cdf075f
 
     def collision_right_ladder_UP(self):
         """MAKE THE LEMMING CLIMB A RIGHT LADDER UP"""

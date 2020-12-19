@@ -43,7 +43,7 @@ class Maingame:
         pyxel.load("assets/SPRITES.pyxres")
         
 
-        pyxel.playm(0,loop=True)                     # PLAYING BACKGROUND MUSIC
+        #pyxel.playm(0,loop=True)                     # PLAYING BACKGROUND MUSIC
 
         self.cursorX, self.cursorY = 0, 32           # INITIAL VALUES OF USER POINTER
 
@@ -575,7 +575,9 @@ class Maingame:
         THIS IS BASICALLY THE CORE CODE OF THE GAME."""
 
         for i in self.list_of_appeared_lemmings:
+            self.cellclass_of_cell = self.boardmatrix[int(i.lemx//16)][int(i.lemy//16)].cellclass
 
+<<<<<<< HEAD
             # First we have to define some variables called cellclass checkers. They allow
             # the lemmings to "watch" some positions around them.
             
@@ -585,6 +587,9 @@ class Maingame:
 
             ##CELLCLASS CHECKERS: RIGHT, LEFT AND BELOW THE LEMMINGS
 
+=======
+            ##cellclass CHECKERS: RIGHT, LEFT AND BELOW
+>>>>>>> 624e81c49c43a7e8311f6d9d47264eae5cdf075f
             self.cellclass_of_cell_right = self.boardmatrix[int(i.lemx//16)+1][int(i.lemy//16)].cellclass
             self.cellclass_of_cell_below_right = self.boardmatrix[int(i.lemx//16)][int((i.lemy//16)+1)].cellclass
             self.cellclass_of_cell_left = self.boardmatrix[int(i.lemx//16)][int(i.lemy//16)].cellclass
@@ -715,6 +720,7 @@ class Maingame:
                             if i.deactivate == False:           ##checker for sound effect
                                 i.deactivate = True
                                 pyxel.play(3,14)
+<<<<<<< HEAD
                                 self.myscore.dellemming_died()
 
                 #### LADDER COLLISIONS ####    
@@ -724,6 +730,57 @@ class Maingame:
                 # See bug report for further information.       
                             
                 ##ENCOUNTER WITH RIGHT LADDER ##
+=======
+                                self.myscore.desllemming_died()
+                            
+                ##ENCOUNTER WITH RIGHT LADDER
+
+                    if(isinstance(self.cellclass_of_cell,Right_Ladder)):
+                        if i.direction=="R":
+                            i.ladder_collisionUP()
+                            i.falling=False
+                            i.fall()
+                            self.cellclass_of_cell.used = True
+                            print("Hello")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+                        elif i.direction=="L":
+                            i.colision_left_ladder()
+                            i.falling=False
+                            i.fall()
+                            self.cellclass_of_cell.used = True
+                            print("Hello")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+                     
+                    if(isinstance(self.cellclass_of_cell_below_left,Right_Ladder)):
+                        if i.direction=="R":
+                            i.ladder_colisionDOWN()
+                            i.falling=False
+                            i.fall() 
+                            self.cellclass_of_cell_below_left.used = True  
+                            print("Hell") 
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+
+                        elif i.direction=="L":
+                            i.ladder_colisionDOWN_left()
+                            i.falling=False
+                            i.fall() 
+                            self.cellclass_of_cell_below_left.used = True  
+                            print("Hell")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+                    
+                    if(isinstance(self.cellclass_of_cell,Platform)):
+                        i.direction=="R"
+                        print("Heo")
+                    
+>>>>>>> 624e81c49c43a7e8311f6d9d47264eae5cdf075f
 
                 ### all comments below can be applicable to the left ladder also
                 
@@ -752,6 +809,7 @@ class Maingame:
                         # (self.cellclass_of_cell_below_left is used to check the cell below)
                                     
                         
+<<<<<<< HEAD
                         if(isinstance(self.cellclass_of_cell_below_left,Right_Ladder)):
                             if i.direction=="R":
                                 i.collision_right_ladder_DOWN()
@@ -804,6 +862,44 @@ class Maingame:
 
                     
     
+=======
+                ##ENCOUNTER WITH LEFT LADDER
+               # if i.lemx<=cursorX:
+                    if(isinstance(self.cellclass_of_cell,Left_Ladder)):
+                        i.colision_left_ladder_UP()
+                        self.cellclass_of_cell.used = True
+                        print("J")
+                        if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+                        
+                    if(isinstance(self.cellclass_of_cell_below_left,Left_Ladder)):
+                        if i.direction=="R":
+                            i.ladder_colisionDOWN()
+                            self.cellclass_of_cell_below_left.used = True
+                            i.falling=False
+                            i.fall()
+                            print("G")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+                        elif i.direction=="L":
+                            i.ladder_colisionDOWN_left()
+                            i.falling=False
+                            i.fall()
+                            print("G")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+
+                    
+                    """if(isinstance(self.cellclass_of_cell,Platform)):
+                        i.direction=="R"
+                        print("D")
+                    if(isinstance(self.cellclass_of_cell_below_left,Platform)):
+                        i.direction=="R"
+                        print("S")"""
+>>>>>>> 624e81c49c43a7e8311f6d9d47264eae5cdf075f
                         
                     # LEMMINGS DYING WHEN REACHING LAVA (code not implemented, read info in lava module)       
                     """
@@ -896,7 +992,11 @@ class Maingame:
                 if i.sprite == "Blocker":
                     pyxel.blt(i.lemx, i.lemy,0,16,64,16,16,0)
                 if i.sprite =="Builder":                            #Draws the sprite for the ladder builder
+<<<<<<< HEAD
                     pyxel.blt(i.lemx,i.lemy,0,0,80,16,16,0)         #(not implemented feature)
+=======
+                    pyxel.blt(i.lemx,i.lemy,0,0,80,16,16,0)
+>>>>>>> 624e81c49c43a7e8311f6d9d47264eae5cdf075f
             if i.sprite == "died":
                 pyxel.blt(i.lemx, i.lemy,0,32,32,16,16,0)
                 
