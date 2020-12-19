@@ -631,16 +631,45 @@ class Maingame:
                 ##ENCOUNTER WITH RIGHT LADDER
 
                     if(isinstance(self.cellclass_of_cell,Right_Ladder)):
-                        i.ladder_collisionUP()
-                        i.falling=False
-                        i.fall()
-                        print("Hello")
+                        if i.direction=="R":
+                            i.ladder_collisionUP()
+                            i.falling=False
+                            i.fall()
+                            self.cellclass_of_cell.used = True
+                            print("Hello")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+                        elif i.direction=="L":
+                            i.colision_left_ladder()
+                            i.falling=False
+                            i.fall()
+                            self.cellclass_of_cell.used = True
+                            print("Hello")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
                      
                     if(isinstance(self.cellclass_of_cell_below_left,Right_Ladder)):
-                        i.ladder_colisionDOWN()
-                        i.falling=False
-                        i.fall()   
-                        print("Hell") 
+                        if i.direction=="R":
+                            i.ladder_colisionDOWN()
+                            i.falling=False
+                            i.fall() 
+                            self.cellclass_of_cell.used = True  
+                            print("Hell") 
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+
+                        elif i.direction=="L":
+                            i.ladder_colisionDOWN_left()
+                            i.falling=False
+                            i.fall() 
+                            self.cellclass_of_cell.used = True  
+                            print("Hell")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
                     
                     if(isinstance(self.cellclass_of_cell,Platform)):
                         i.direction=="R"
@@ -651,14 +680,31 @@ class Maingame:
                 ##ENCOUNTER WITH LEFT LADDER
                # if i.lemx<=cursorX:
                     if(isinstance(self.cellclass_of_cell,Left_Ladder)):
-                        i.colision_left_ladder()
+                        i.colision_left_ladder_UP()
                         print("J")
+                        if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
                         
-                    if(isinstance(self.cellclass_of_cell_below_left,Left_Ladder)):
-                        i.ladder_colisionDOWN()
-                        i.falling=False
-                        i.fall()
-                        print("G")    
+                    if((isinstance(self.cellclass_of_cell_below_left,Left_Ladder)) or
+                    isinstance(self.cellclass_of_cell_below_left,Left_Ladder)):
+                        if i.direction=="R":
+                            i.ladder_colisionDOWN()
+                            i.falling=False
+                            i.fall()
+                            print("G")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+                        elif i.direction=="L":
+                            i.ladder_colisionDOWN_left()
+                            i.falling=False
+                            i.fall()
+                            print("G")
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+                                print("Heo")
+
                     
                     """if(isinstance(self.cellclass_of_cell,Platform)):
                         i.direction=="R"
