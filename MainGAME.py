@@ -553,18 +553,20 @@ class Maingame:
         # And then we make the lemmings appear from time to time, one by one.
 
         if counter % 100 == 0:
-            if len(self.list_of_appeared_lemmings)< len(self.list_of_lemmings):
-                
-                self.list_of_appeared_lemmings.append(Lemming(self.entrygate.entrygate_x, self.entrygate.entrygate_y)) 
-                
-                ##sound of lemmings appearing
-                pyxel.play(2,10) 
-                
-                ## changing the lemmings corresponding attributes
 
-                for i in self.list_of_appeared_lemmings:
-                        i.appeared = True
-                        i.checker_appeared = True
+            if self.zawarudo == False:
+                if len(self.list_of_appeared_lemmings)< len(self.list_of_lemmings):
+                    
+                    self.list_of_appeared_lemmings.append(Lemming(self.entrygate.entrygate_x, self.entrygate.entrygate_y)) 
+                    
+                    ##sound of lemmings appearing
+                    pyxel.play(2,10) 
+                    
+                    ## changing the lemmings corresponding attributes
+
+                    for i in self.list_of_appeared_lemmings:
+                            i.appeared = True
+                            i.checker_appeared = True
         
                      
                 
@@ -589,7 +591,7 @@ class Maingame:
             self.cellclass_of_cell_below_right = self.boardmatrix[int(i.lemx//16)][int((i.lemy//16)+1)].cellclass
             self.cellclass_of_cell_left = self.boardmatrix[int(i.lemx//16)][int(i.lemy//16)].cellclass
             self.cellclass_of_cell_below_left = self.boardmatrix[int(i.lemx//16)][int(i.lemy//16)+1].cellclass
-            
+
             ## SPECIAL CELLCLASS CHECKERS FOR DETECTING THE BLOCKERS
 
             self.cellclass_of_cell_right_blocker = self.boardmatrix[int(i.lemx//16)+1][int(i.lemy//16)].cellclass
@@ -603,8 +605,9 @@ class Maingame:
 
                 if i.appeared == True:                             ## check if lemmings have appeared
 
-                    if i.checker_appeared == True:                 ## just to establish the initial sprite
-                        i.change_sprite("walking_R")               ## of the lemmings
+                    if i.checker_appeared == True:
+                        if i.sprite != str("walking_L") and i.sprite != str("Blocker"):           ## just to establish the initial sprite
+                            i.change_sprite("walking_R")                                         ## of the lemmings
                         i.checker_appeared = False
 
                     if i.died == False or i.saved == False:        ## check that they aren't saved, neither died
@@ -640,22 +643,23 @@ class Maingame:
                     ## COLLISION WITH BLOCKER OBJECT TO TRANSFORM THE LEMMING
                     
                     if isinstance(self.cellclass_of_cell_right, Blocker) == True:
-                        if i.checker_blocker == False:              ### just a checker to play the sound effect correctly
-                            pyxel.play(2,13)
-                        i.converting_to_blocker()                   ### transforming the lemming
-                        self.cellclass_of_cell_right.used = True    ### making the blocker tool used
-                        
-                        ### creating a Lemming blocker on the stablished position
-                        self.boardmatrix[int(i.lemx/16)][int(i.lemy/16)].cellclass = Blocker_lemming(i.lemx,i.lemy)
+                        if i.falling == False and i.falling_with_umbrella == False:
+                            if i.checker_blocker == False:              ### just a checker to play the sound effect correctly
+                                pyxel.play(2,13)
+                            i.converting_to_blocker()                   ### transforming the lemming
+                            self.cellclass_of_cell_right.used = True    ### making the blocker tool used
+                            
+                            ### creating a Lemming blocker on the stablished position
+                            self.boardmatrix[int(i.lemx/16)][int(i.lemy/16)].cellclass = Blocker_lemming(i.lemx,i.lemy)
 
                     if isinstance(self.cellclass_of_cell_left, Blocker) == True:
-
-                        if i.checker_blocker == False:
-                            pyxel.play(2,13)
-                        i.converting_to_blocker()
-                        self.cellclass_of_cell_left.used = True
-                        
-                        self.boardmatrix[int(i.lemx/16)][int(i.lemy/16)].cellclass = Blocker_lemming(i.lemx,i.lemy) ### creating a Lemming blocker on the stablished position
+                        if i.falling == False and i.falling_with_umbrella == False:
+                            if i.checker_blocker == False:
+                                pyxel.play(2,13)
+                            i.converting_to_blocker()
+                            self.cellclass_of_cell_left.used = True
+                            
+                            self.boardmatrix[int(i.lemx/16)][int(i.lemy/16)].cellclass = Blocker_lemming(i.lemx,i.lemy) ### creating a Lemming blocker on the stablished position
 
 
                     ## COLLISION WITH EXIT GATE: SAVING THE LEMMINGS AND ENDING THE GAME
@@ -727,79 +731,78 @@ class Maingame:
 
                 ### all comments below can be applicable to the left ladder also
                 
-                    if i.falling == False and i.falling_with_umbrella == False:
-
-                        if(isinstance(self.cellclass_of_cell,Right_Ladder)):
-                            if i.direction=="R":
-                                i.collision_right_ladder_UP()   ## climbing lemming method
-                                i.falling=False                 ## not letting the lemming fall while climbing
+                    
+                    if(isinstance(self.cellclass_of_cell,Right_Ladder)):
+                        if i.direction=="R":
+                            i.collision_right_ladder_UP()   ## climbing lemming method
+                            i.falling=False                 ## not letting the lemming fall while climbing
+                            
+                            self.cellclass_of_cell.used = True      ## make the ladder an used tool
+                            
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"    
                                 
-                                self.cellclass_of_cell.used = True      ## make the ladder an used tool
-                                
-                                if(isinstance(self.cellclass_of_cell,Platform)):
-                                    i.direction=="R"    
-                                    
-                            elif i.direction=="L":
-                                i.collision_left_ladder_UP()
-                                i.falling=False
-                                
-                                self.cellclass_of_cell.used = True
-                                
-                                if(isinstance(self.cellclass_of_cell,Platform)):
-                                    i.direction=="R"
-
-                        # MAKE THE LEMMING CLIMB DOWN THE LADDERS
-                        # (self.cellclass_of_cell_below_left is used to check the cell below)
-                                    
-                        
-                        if(isinstance(self.cellclass_of_cell_below_left,Right_Ladder)):
-                            if i.direction=="R":
-                                i.collision_right_ladder_DOWN()
-                                i.falling=False
-                                
-                                self.cellclass_of_cell_below_left.used = True  
-                                
-                                if(isinstance(self.cellclass_of_cell,Platform)):
-                                    i.direction=="R"
-                                    
-
-                            elif i.direction=="L":
-                                i.collision_left_ladder_DOWN()
-                                i.falling=False
-                                
-                                self.cellclass_of_cell_below_left.used = True  
-                                
-                                if(isinstance(self.cellclass_of_cell,Platform)):
-                                    i.direction=="R"
-
-
-                ##ENCOUNTER WITH LEFT LADDER
-               
-                        if(isinstance(self.cellclass_of_cell,Left_Ladder)):
+                        elif i.direction=="L":
                             i.collision_left_ladder_UP()
+                            i.falling=False
+                            
                             self.cellclass_of_cell.used = True
                             
                             if(isinstance(self.cellclass_of_cell,Platform)):
-                                    i.direction=="R"
-                                    
+                                i.direction=="R"
+
+                    # MAKE THE LEMMING CLIMB DOWN THE LADDERS
+                    # (self.cellclass_of_cell_below_left is used to check the cell below)
+                                
+                    
+                    if(isinstance(self.cellclass_of_cell_below_left,Right_Ladder)):
+                        if i.direction=="R":
+                            i.collision_right_ladder_DOWN()
+                            i.falling=False
                             
-                        if(isinstance(self.cellclass_of_cell_below_left,Left_Ladder)):
-                            if i.direction=="R":
-                                i.collision_right_ladder_DOWN()
-                                self.cellclass_of_cell_below_left.used = True
-                                i.falling=False
+                            self.cellclass_of_cell_below_left.used = True  
+                            
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
                                 
+
+                        elif i.direction=="L":
+                            i.collision_left_ladder_DOWN()
+                            i.falling=False
+                            
+                            self.cellclass_of_cell_below_left.used = True  
+                            
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
+
+
+            ##ENCOUNTER WITH LEFT LADDER
+            
+                    if(isinstance(self.cellclass_of_cell,Left_Ladder)):
+                        i.collision_left_ladder_UP()
+                        self.cellclass_of_cell.used = True
+                        
+                        if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
                                 
-                                if(isinstance(self.cellclass_of_cell,Platform)):
-                                    i.direction=="R"
-                                    
-                            elif i.direction=="L":
-                                i.collision_left_ladder_DOWN()
-                                i.falling=False
+                        
+                    if(isinstance(self.cellclass_of_cell_below_left,Left_Ladder)):
+                        if i.direction=="R":
+                            i.collision_right_ladder_DOWN()
+                            self.cellclass_of_cell_below_left.used = True
+                            i.falling=False
+                            
+                            
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
                                 
-                                
-                                if(isinstance(self.cellclass_of_cell,Platform)):
-                                    i.direction=="R"
+                        elif i.direction=="L":
+                            i.collision_left_ladder_DOWN()
+                            i.falling=False
+                            
+                            
+                            if(isinstance(self.cellclass_of_cell,Platform)):
+                                i.direction=="R"
                                 
 
                     
@@ -815,11 +818,11 @@ class Maingame:
                     # COLLISION OF LEMMINGS WITH EDGES OF THE GAME
                     
                     if i.lemx >= WIDTH -16 or i.lemx <= 0:
-                        i.changeDirection()
-                        if i.direction == "R":
-                            i.change_sprite("walking_R")
-                        else:
-                            i.change_sprite("walking_L")
+                            i.changeDirection()
+                            if i.direction == "R":
+                                i.change_sprite("walking_R")
+                            else:
+                                i.change_sprite("walking_L")
 
 
     # CALLING THE MAIN UPDATE FUNCTION: calling al the previous update() methods
@@ -935,13 +938,11 @@ class Maingame:
                     if cellcheck.cellclass.used == False:
                         pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0,32,80,16,16,0)
                     else:
-                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0,0,96,16,16,0)
+                        pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0,48,80,16,16,0)
+                        pyxel.blt(cellcheck.cellx*16-16, cellcheck.celly*16, 0,0,96,16,16,0) # drawing the hole next to it
 
                 if isinstance(cellcheck.cellclass, Platform) == True:
                     pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 48,16,16,16,0)
-                
-                if isinstance(cellcheck.cellclass, Destroyed_platform) == True:
-                    pyxel.blt(cellcheck.cellx*16, cellcheck.celly*16, 0, 16,80,16,16,0)
 
                 # LAVA NOT IMPLEMENTED (see lava module for further info)
                 if isinstance(cellcheck.cellclass, Lava) == True:

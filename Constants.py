@@ -26,6 +26,6 @@ MAX_LEMMINGS= random.randint(10,20) # NUMBER OF LEMMINGS THAT WILL APPEAR.
 # LEVELS ARE GENERATED RANDOMLY AND IMPOSSIBLE LEVELS CAN APPEAR.
 
 MAX_LADDERS = random.randint(10,20)
-MAX_UMBRELLAS = random.randint(5,10)
-MAX_BLOCKERS = random.randint(5,10)
-MAX_SHOVELS = random.randint(5,10)
+MAX_UMBRELLAS = random.randint(3,5)
+MAX_BLOCKERS = random.randint(3,5)
+MAX_SHOVELS = random.randint(3,5)
