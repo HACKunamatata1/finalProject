@@ -43,7 +43,7 @@ class Maingame:
         pyxel.load("assets/SPRITES.pyxres")
         
 
-        pyxel.playm(0,loop=True)                     # PLAYING BACKGROUND MUSIC
+        #pyxel.playm(0,loop=True)                     # PLAYING BACKGROUND MUSIC
 
         self.cursorX, self.cursorY = 0, 32           # INITIAL VALUES OF USER POINTER
 
@@ -79,14 +79,15 @@ class Maingame:
         ## (see lava module for further info):
 
         """
-            for i in range(self.cellcolumn):
-                cellcheck=self.boardmatrix[i][int(self.cellcolumn) - 1]
-                cellcheck.cellclass= Lava(i, (int(self.cellcolumn) - 1))
+        for i in range(self.cellcolumn):
+            cellcheck=self.boardmatrix[i][int(self.cellcolumn) - 1]
+            cellcheck.cellclass= Lava(i, (int(self.cellcolumn) - 1))
         """
-
+        
         for i in range(self.cellcolumn):
             cellcheck=self.boardmatrix[i][int(self.cellcolumn) - 1]
             cellcheck.cellclass= Platform(i, (int(self.cellcolumn) - 1))
+           
         
         # SECOND STEP: CREATING THE PLATFORMS
 
@@ -779,6 +780,7 @@ class Maingame:
             ##ENCOUNTER WITH LEFT LADDER
             
                     if(isinstance(self.cellclass_of_cell,Left_Ladder)):
+                        i.direction = "L"
                         i.collision_left_ladder_UP()
                         self.cellclass_of_cell.used = True
                         
@@ -809,12 +811,17 @@ class Maingame:
     
                         
                     # LEMMINGS DYING WHEN REACHING LAVA (code not implemented, read info in lava module)       
+                    
                     """
-                    if (self.lemming.falling == True and isinstance(self.cellclass_of_cell_below_right, Lava) == True):
-                            self.lemming.lava = True
-                            self.lemming.died = True
-
+                    if (i.falling == True and isinstance(self.cellclass_of_cell_below_right, Lava) == True):
+                            i.lava = True
+                            i.die() 
+                            if i.deactivate == False:           ##checker for sound effect
+                                i.deactivate = True
+                                pyxel.play(3,14)
+                                self.myscore.dellemming_died()
                     """
+                    
                     # COLLISION OF LEMMINGS WITH EDGES OF THE GAME
                     
                     if i.lemx >= WIDTH -16 or i.lemx <= 0:
